@@ -2,6 +2,8 @@ import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/NotFound";
 import AgentWorkspace from "@/pages/AgentWorkspace";
+import BackupPage from "@/pages/BackupPage";
+import CodeLab from "@/pages/CodeLab";
 import { Route, Router as WouterRouter, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
@@ -15,6 +17,8 @@ function AppRoutes() {
       <Switch>
         <Route path="/" component={Home} />
         <Route path="/agent/:id" component={AgentWorkspace} />
+        <Route path="/backup" component={BackupPage} />
+        <Route path="/code-lab" component={CodeLab} />
         <Route path="/404" component={NotFound} />
         <Route component={NotFound} />
       </Switch>
