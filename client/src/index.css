@@ -4,80 +4,27 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) - 4px); --radius-md: calc(var(--radius) - 2px); --radius-lg: var(--radius); --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background); --color-foreground: var(--foreground); --color-card: var(--card); --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover); --color-popover-foreground: var(--popover-foreground); --color-primary: var(--primary); --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary); --color-secondary-foreground: var(--secondary-foreground); --color-muted: var(--muted); --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent); --color-accent-foreground: var(--accent-foreground); --color-destructive: var(--destructive); --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border); --color-input: var(--input); --color-ring: var(--ring);
 }
 
 :root {
-  --primary: oklch(0.45 0.19 287);
-  --primary-foreground: oklch(0.99 0.01 286);
-  --background: oklch(0.985 0.008 286);
-  --foreground: oklch(0.21 0.025 286);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.21 0.025 286);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.21 0.025 286);
-  --secondary: oklch(0.95 0.025 286);
-  --secondary-foreground: oklch(0.3 0.07 286);
-  --muted: oklch(0.955 0.01 286);
-  --muted-foreground: oklch(0.5 0.025 286);
-  --accent: oklch(0.94 0.04 286);
-  --accent-foreground: oklch(0.26 0.08 286);
-  --destructive: oklch(0.58 0.22 25);
-  --destructive-foreground: oklch(0.99 0 0);
-  --border: oklch(0.89 0.018 286);
-  --input: oklch(0.9 0.018 286);
-  --ring: oklch(0.55 0.18 287);
-  --radius: 0.9rem;
+  --primary: oklch(0.73 0.12 174); --primary-foreground: oklch(0.15 0.03 210);
+  --background: oklch(0.12 0.025 215); --foreground: oklch(0.93 0.025 210);
+  --card: oklch(0.16 0.03 215); --card-foreground: oklch(0.93 0.025 210);
+  --popover: oklch(0.16 0.03 215); --popover-foreground: oklch(0.93 0.025 210);
+  --secondary: oklch(0.22 0.035 210); --secondary-foreground: oklch(0.86 0.025 210);
+  --muted: oklch(0.2 0.025 215); --muted-foreground: oklch(0.66 0.03 210);
+  --accent: oklch(0.25 0.05 180); --accent-foreground: oklch(0.9 0.04 175);
+  --destructive: oklch(0.62 0.18 25); --destructive-foreground: oklch(0.98 0 0);
+  --border: oklch(1 0 0 / 13%); --input: oklch(1 0 0 / 16%); --ring: oklch(0.73 0.12 174); --radius: 0.8rem;
 }
 
-.dark {
-  --background: oklch(0.15 0.025 286);
-  --foreground: oklch(0.94 0.01 286);
-  --card: oklch(0.19 0.03 286);
-  --card-foreground: oklch(0.94 0.01 286);
-  --popover: oklch(0.19 0.03 286);
-  --popover-foreground: oklch(0.94 0.01 286);
-  --secondary: oklch(0.25 0.04 286);
-  --secondary-foreground: oklch(0.9 0.01 286);
-  --muted: oklch(0.24 0.03 286);
-  --muted-foreground: oklch(0.7 0.02 286);
-  --accent: oklch(0.27 0.06 286);
-  --accent-foreground: oklch(0.95 0.01 286);
-  --border: oklch(1 0 0 / 12%);
-  --input: oklch(1 0 0 / 15%);
-}
+.dark { --background: oklch(0.09 0.02 215); --foreground: oklch(0.94 0.02 210); --card: oklch(0.14 0.03 215); --card-foreground: oklch(0.94 0.02 210); --popover: oklch(0.14 0.03 215); --popover-foreground: oklch(0.94 0.02 210); --secondary: oklch(0.2 0.03 215); --secondary-foreground: oklch(0.9 0.02 210); --muted: oklch(0.18 0.025 215); --muted-foreground: oklch(0.68 0.025 210); --accent: oklch(0.24 0.05 180); --accent-foreground: oklch(0.92 0.04 175); --border: oklch(1 0 0 / 14%); --input: oklch(1 0 0 / 17%); }
 
-@layer base {
-  * { @apply border-border outline-ring/50; }
-  body { @apply bg-background text-foreground; font-family: "DM Sans", ui-sans-serif, system-ui, sans-serif; }
-  button:not(:disabled), [role="button"]:not([aria-disabled="true"]), [type="button"]:not(:disabled), [type="submit"]:not(:disabled), a[href], select:not(:disabled) { @apply cursor-pointer; }
-}
-
-@layer components {
-  .container { width: 100%; margin-left: auto; margin-right: auto; padding-left: 1.25rem; padding-right: 1.25rem; }
-  @media (min-width: 640px) { .container { padding-left: 2rem; padding-right: 2rem; } }
-  @media (min-width: 1024px) { .container { max-width: 1280px; } }
-  .soft-grid { background-image: linear-gradient(to right, rgba(89, 67, 150, .06) 1px, transparent 1px), linear-gradient(to bottom, rgba(89, 67, 150, .06) 1px, transparent 1px); background-size: 28px 28px; }
-}
+@layer base { * { @apply border-border outline-ring/50; } body { @apply bg-background text-foreground; font-family: "DM Sans", ui-sans-serif, system-ui, sans-serif; color-scheme: dark; } button:not(:disabled), [role="button"]:not([aria-disabled="true"]), [type="button"]:not(:disabled), [type="submit"]:not(:disabled), a[href], select:not(:disabled) { @apply cursor-pointer; } }
+@layer components { .container { width: 100%; margin-left: auto; margin-right: auto; padding-left: 1.25rem; padding-right: 1.25rem; } @media (min-width: 640px) { .container { padding-left: 2rem; padding-right: 2rem; } } @media (min-width: 1024px) { .container { max-width: 1280px; } } .soft-grid { background-image: linear-gradient(to right, rgba(113, 206, 196, .09) 1px, transparent 1px), linear-gradient(to bottom, rgba(113, 206, 196, .09) 1px, transparent 1px); background-size: 28px 28px; } }
