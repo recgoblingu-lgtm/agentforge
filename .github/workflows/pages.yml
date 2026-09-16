@@ -31,6 +31,12 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Build static frontend
         run: pnpm exec vite build
+      - name: Add SPA route entrypoints
+        run: |
+          cp dist/public/index.html dist/public/404.html
+          mkdir -p dist/public/backup dist/public/code-lab
+          cp dist/public/index.html dist/public/backup/index.html
+          cp dist/public/index.html dist/public/code-lab/index.html
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
