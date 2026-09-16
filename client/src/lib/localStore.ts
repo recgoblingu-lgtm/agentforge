@@ -7,6 +7,9 @@ export type LocalAgent = {
   id: string; name: string; tagline: string; icon: string; accent: string; systemPrompt: string; capabilities: string[]; settings: AgentSettings; memories: string[]; knowledge: LocalNote[]; chats: { id: string; title: string; updatedAt: number; messages: LocalMessage[] }[]; createdAt: number;
 };
 
+export const ARPHIX_VIP_CODE = "ARPHIX";
+export function isArphixVipCode(value: string) { return value.trim().toUpperCase() === ARPHIX_VIP_CODE; }
+
 const STORAGE_KEY = "agentforge.agents.v1";
 const defaultSettings: AgentSettings = { mode: "balanced", responseLength: "standard", tone: "clear and warm", enabledTools: ["calculator", "planner", "vision", "voice"], vipUnlocked: false };
 function safeId() { return typeof crypto !== "undefined" && "randomUUID" in crypto ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(36).slice(2)}`; }

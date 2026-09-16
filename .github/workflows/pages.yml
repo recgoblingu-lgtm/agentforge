@@ -34,9 +34,11 @@ jobs:
       - name: Add SPA route entrypoints
         run: |
           cp dist/public/index.html dist/public/404.html
-          mkdir -p dist/public/backup dist/public/code-lab
+          mkdir -p dist/public/backup dist/public/code-lab dist/public/browser dist/public/tools
           cp dist/public/index.html dist/public/backup/index.html
           cp dist/public/index.html dist/public/code-lab/index.html
+          cp dist/public/index.html dist/public/browser/index.html
+          cp dist/public/index.html dist/public/tools/index.html
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:

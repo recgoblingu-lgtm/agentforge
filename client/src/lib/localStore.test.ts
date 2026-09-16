@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { exportAgentsJson, importAgentsJson, loadAgents, type LocalAgent } from "./localStore";
+import { exportAgentsJson, importAgentsJson, isArphixVipCode, loadAgents, type LocalAgent } from "./localStore";
 
 const sample: LocalAgent = {
   id: "agent-1", name: "Study Desk", tagline: "A patient tutor", icon: "✦", accent: "cyan", systemPrompt: "Teach clearly.", capabilities: ["Teaching"], settings: { mode: "precise", responseLength: "standard", tone: "clear", enabledTools: ["calculator"], vipUnlocked: false }, memories: ["I like examples."], knowledge: [{ id: "note-1", title: "Course", content: "Algebra" }], chats: [], createdAt: 123,
@@ -23,5 +23,10 @@ describe("AgentForge backups", () => {
     expect(result.imported).toBe(1);
     expect(loadAgents()[0]?.settings.mode).toBe("precise");
     expect(loadAgents()[0]?.memories).toEqual(["I like examples."]);
+  });
+
+  it("accepts the ArphixVIP unlock code", () => {
+    expect(isArphixVipCode(" Arphix ")).toBe(true);
+    expect(isArphixVipCode("wrong-code")).toBe(false);
   });
 });
