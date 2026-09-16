@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { exportAgentsJson, importAgentsJson, isArphixVipCode, loadAgents, type LocalAgent } from "./localStore";
+import { exportAgentsJson, exportChatJson, importAgentsJson, importChatJson, isArphixVipCode, loadAgents, type LocalAgent } from "./localStore";
 
 const sample: LocalAgent = {
   id: "agent-1", name: "Study Desk", tagline: "A patient tutor", icon: "✦", accent: "cyan", systemPrompt: "Teach clearly.", capabilities: ["Teaching"], settings: { mode: "precise", responseLength: "standard", tone: "clear", enabledTools: ["calculator"], vipUnlocked: false }, memories: ["I like examples."], knowledge: [{ id: "note-1", title: "Course", content: "Algebra" }], chats: [], createdAt: 123,
@@ -29,4 +29,15 @@ describe("AgentForge backups", () => {
     expect(isArphixVipCode(" Arphix ")).toBe(true);
     expect(isArphixVipCode("wrong-code")).toBe(false);
   });
+
+  it("exports and imports chat history without losing messages", () => {
+    const agentWithChat = { ...sample, chats: [{ id: "chat-1", title: "Imported lesson", updatedAt: 456, messages: [{ role: "user" as const, content: "Hello", createdAt: 457 }, { role: "assistant" as const, content: "Hi there", createdAt: 458 }] }] };
+    const exported = exportChatJson(agentWithChat, "chat-1");
+    saveLocalAgent(agentWithChat);
+    const result = importChatJson("agent-1", exported);
+    expect(result.imported).toBe(1);
+    expect(result.agent.chats[0]?.messages[0]?.content).toBe("Hello");
+  });
 });
+
+function saveLocalAgent(agent: LocalAgent) { localStorage.setItem("agentforge.agents.v1", JSON.stringify([agent])); }

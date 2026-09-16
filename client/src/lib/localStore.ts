@@ -3,8 +3,9 @@ export type ResponseLength = "brief" | "standard" | "deep";
 export type AgentSettings = { mode: AgentMode; responseLength: ResponseLength; tone: string; enabledTools: string[]; vipUnlocked: boolean };
 export type LocalMessage = { role: "user" | "assistant"; content: string; createdAt: number };
 export type LocalNote = { id: string; title: string; content: string };
+export type LocalChat = { id: string; title: string; updatedAt: number; messages: LocalMessage[] };
 export type LocalAgent = {
-  id: string; name: string; tagline: string; icon: string; accent: string; systemPrompt: string; capabilities: string[]; settings: AgentSettings; memories: string[]; knowledge: LocalNote[]; chats: { id: string; title: string; updatedAt: number; messages: LocalMessage[] }[]; createdAt: number;
+  id: string; name: string; tagline: string; icon: string; accent: string; systemPrompt: string; capabilities: string[]; settings: AgentSettings; memories: string[]; knowledge: LocalNote[]; chats: LocalChat[]; createdAt: number;
 };
 
 export const ARPHIX_VIP_CODE = "ARPHIX";
@@ -30,4 +31,17 @@ export function importAgentsJson(raw: string, mode: "merge" | "replace" = "merge
   const used = new Set(existing.map((agent) => agent.id));
   const restored = incoming.map((agent) => { if (used.has(agent.id)) return { ...agent, id: safeId() }; used.add(agent.id); return agent; });
   const result = [...restored, ...existing]; saveAgents(result); return { agents: result, imported: restored.length };
+}
+
+export function exportChatJson(agent: LocalAgent, chatId?: string) {
+  const chats = chatId ? agent.chats.filter((chat) => chat.id === chatId) : agent.chats;
+  return JSON.stringify({ app: "AgentForge Chat", version: 1, exportedAt: new Date().toISOString(), agent: { id: agent.id, name: agent.name }, chats }, null, 2);
+}
+
+export function importChatJson(agentId: string, raw: string) {
+  const parsed = JSON.parse(raw);
+  if (!parsed || parsed.app !== "AgentForge Chat" || !Array.isArray(parsed.chats)) throw new Error("This is not a valid AgentForge chat export.");
+  const imported = parsed.chats.map((chat: any) => ({ id: typeof chat.id === "string" ? chat.id : safeId(), title: String(chat.title || "Imported conversation"), updatedAt: Number(chat.updatedAt) || Date.now(), messages: Array.isArray(chat.messages) ? chat.messages.filter((message: any) => message?.role === "user" || message?.role === "assistant").map((message: any) => ({ role: message.role, content: String(message.content || ""), createdAt: Number(message.createdAt) || Date.now() })) : [] }));
+  const current = loadAgents(); const agent = current.find((item) => item.id === agentId); if (!agent) throw new Error("Agent not found in this browser.");
+  const ids = new Set(agent.chats.map((chat) => chat.id)); const restored = imported.map((chat: LocalChat) => ids.has(chat.id) ? { ...chat, id: safeId() } : chat); const updated = current.map((item) => item.id === agentId ? { ...item, chats: [...restored, ...item.chats] } : item); saveAgents(updated); return { agent: updated.find((item) => item.id === agentId) as LocalAgent, imported: restored.length };
 }
