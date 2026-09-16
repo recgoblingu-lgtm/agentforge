@@ -30,7 +30,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Build static frontend
-        run: pnpm exec vite build
+        run: NODE_ENV=production pnpm exec vite build
       - name: Add SPA route entrypoints
         run: |
           cp dist/public/index.html dist/public/404.html
