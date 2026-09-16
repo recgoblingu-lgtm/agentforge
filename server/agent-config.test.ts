@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { generatedAgentSchema, responseText } from "./routers";
+import { appRouter, generatedAgentSchema, responseText } from "./routers";
 
 describe("AgentForge model response handling", () => {
   it("extracts plain text content", () => {
@@ -18,5 +18,10 @@ describe("AgentForge model response handling", () => {
   it("requires the fields needed to create a useful agent", () => {
     expect(generatedAgentSchema.required).toEqual(["name", "tagline", "icon", "accent", "systemPrompt", "capabilities"]);
     expect(generatedAgentSchema.properties.capabilities.type).toBe("array");
+  });
+
+  it("registers an anonymous public AI router", () => {
+    expect(appRouter._def.procedures["publicAi.generate"]).toBeDefined();
+    expect(appRouter._def.procedures["publicAi.chat"]).toBeDefined();
   });
 });
