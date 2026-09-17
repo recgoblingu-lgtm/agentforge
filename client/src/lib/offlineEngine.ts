@@ -173,6 +173,44 @@ function explainResponse(subject: string, mode: AgentMode, length: ResponseLengt
   return lines.join("\n");
 }
 
+function codingResponse(subject: string, length: ResponseLength) {
+  const lower = subject.toLowerCase();
+  if (lower.includes("car") && lower.includes("javascript")) {
+    return [
+      "Here is a basic JavaScript car model:",
+      "```js",
+      "class Car {",
+      "  constructor(make, model, fuel = 100) {",
+      "    this.make = make;",
+      "    this.model = model;",
+      "    this.fuel = fuel;",
+      "    this.speed = 0;",
+      "  }",
+      "",
+      "  drive(miles) {",
+      "    const fuelUsed = miles * 0.04;",
+      "    if (fuelUsed > this.fuel) return 'Not enough fuel';",
+      "    this.fuel -= fuelUsed;",
+      "    this.speed = 60;",
+      "    return `${this.make} ${this.model} drove ${miles} miles.`;",
+      "  }",
+      "",
+      "  stop() {",
+      "    this.speed = 0;",
+      "    return 'The car stopped.';",
+      "  }",
+      "}",
+      "",
+      "const car = new Car('Example', 'Roadster');",
+      "console.log(car.drive(10));",
+      "console.log(car.stop());",
+      "```",
+      length === "brief" ? "" : "This uses a class to keep the car's state—fuel and speed—together with its actions." ,
+    ].filter(Boolean).join("\n");
+  }
+  return `A JavaScript starting point for ${subject}:\n\n1. Define the data your program needs.\n2. Put related behavior in functions or a class.\n3. Test one small example with console.log().\n\nThe local language model is unavailable, so this is the built-in coding fallback rather than generated model output.`;
+}
+
 function contextBlock(agent: LocalAgent) {
   const pieces: string[] = [];
   if (agent.memories.length) pieces.push(`I am keeping in mind: ${agent.memories.slice(0, 2).join("; ")}.`);
@@ -197,6 +235,9 @@ export function createOfflineResponse(agent: LocalAgent, messages: ConversationM
   }
   if (hasAny(lower, ["research", "compare", "evidence", "source", "investigat", "analysis"])) {
     return `${researchResponse(subject, responseLength)}${contextBlock(agent)}`;
+  }
+  if (hasAny(lower, ["javascript", "typescript", "python", "code", "program", "function", "class", "html", "css", "build me"])) {
+    return `${codingResponse(subject, responseLength)}${contextBlock(agent)}`;
   }
   if (hasAny(lower, ["calculate", "math", "equation", "percent", " + ", " - ", " * ", " / "])) {
     return `For arithmetic, open **Tools → Calculator** in this workspace. It evaluates only basic math in your browser and does not send the expression anywhere.${contextBlock(agent)}`;
