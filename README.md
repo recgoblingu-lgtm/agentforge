@@ -9,7 +9,8 @@ The application is a Vite and React single-page application. It can load a small
 | Capability | Implementation | External dependency |
 |---|---|---|
 | Companion profile creation | Deterministic browser-side rules | None |
-| Chat responses | WebLLM with `Llama-3.2-1B-Instruct-q4f32_1-MLC` running locally | First-run model download and browser cache; no inference API |
+| Chat responses | WebLLM model ladder: Llama 3.2 3B first, then Llama 3.2 1B, then TinyLlama | First-run model download and browser cache; no inference API |
+| Fast response behavior | Immediate deterministic response while the local model warms up | None |
 | Unsupported-device behavior | Deterministic browser-side fallback | None |
 | Notes, memories, chats, settings | `localStorage` | None |
 | Backups | JSON download/upload in the browser | None |
@@ -19,7 +20,7 @@ The application is a Vite and React single-page application. It can load a small
 
 > **Important limitation:** The first local-model setup downloads roughly a gigabyte of quantized model assets and requires a browser with WebGPU. On iPhone/Safari versions or devices where WebGPU is unavailable or memory-constrained, AgentForge automatically uses its deterministic local fallback instead. The model runs on the device after download; prompts are not sent to an inference API.
 
-The local runtime uses [WebLLM](https://webllm.mlc.ai/docs/), which exposes OpenAI-style chat completions over WebGPU. WebLLM documents asynchronous first-run model loading and browser caching; Apple documents WebGPU support on iPhone, iPad, Mac, and Vision Pro. Performance and availability still depend on the specific iPhone, iOS version, Safari/WebKit build, available memory, and whether the model assets are allowed to remain cached.
+The local runtime uses [WebLLM](https://webllm.mlc.ai/docs/), which exposes OpenAI-style chat completions over WebGPU. It tries the smarter Llama 3.2 3B model first, then automatically falls back to a faster 1B model and TinyLlama if memory or device limits prevent the larger model from loading. WebLLM documents asynchronous first-run model loading and browser caching; Apple documents WebGPU support on iPhone, iPad, Mac, and Vision Pro. Performance and availability still depend on the specific iPhone, iOS version, Safari/WebKit build, available memory, and whether the model assets are allowed to remain cached.
 
 ## Run locally
 

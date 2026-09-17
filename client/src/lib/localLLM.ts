@@ -1,12 +1,18 @@
 import type { MLCEngine } from "@mlc-ai/web-llm";
 import type { LocalAgent } from "./localStore";
 
-export const LOCAL_MODEL_ID = "Llama-3.2-1B-Instruct-q4f32_1-MLC";
+export const LOCAL_MODEL_ID = "Llama-3.2-3B-Instruct-q4f16_1-MLC";
+const MODEL_LADDER = [
+  { id: "Llama-3.2-3B-Instruct-q4f16_1-MLC", label: "Llama 3.2 3B Smart", vram: "about 2.3 GB" },
+  { id: "Llama-3.2-1B-Instruct-q4f16_1-MLC", label: "Llama 3.2 1B Fast", vram: "about 900 MB" },
+  { id: "TinyLlama-1.1B-Chat-v0.4-q4f32_1-MLC", label: "TinyLlama Fastest", vram: "about 800 MB" },
+] as const;
 export type LocalLLMStatus = "idle" | "loading" | "ready" | "generating" | "unsupported" | "error";
 
 type StatusListener = (status: LocalLLMStatus, detail: string) => void;
 
 let engine: MLCEngine | undefined;
+let activeModel = "";
 let loading: Promise<MLCEngine> | undefined;
 let lastError = "";
 const listeners = new Set<StatusListener>();
@@ -24,7 +30,7 @@ export function subscribeLocalLLM(listener: StatusListener) {
 }
 
 export function getLocalLLMState() {
-  return { ready: Boolean(engine), loading: Boolean(loading), error: lastError };
+  return { ready: Boolean(engine), loading: Boolean(loading), error: lastError, model: activeModel };
 }
 
 export function supportsLocalLLM() {
@@ -39,17 +45,27 @@ export async function loadLocalLLM() {
     throw new Error("WebGPU is not available in this browser.");
   }
 
-  notify("loading", "Preparing the local model. The first download can be large; later visits use the browser cache.");
-  loading = import("@mlc-ai/web-llm").then(({ CreateMLCEngine }) => CreateMLCEngine(LOCAL_MODEL_ID, {
-    initProgressCallback: (progress) => notify("loading", progress.text || "Downloading the local model…"),
-  }))
-    .then((created) => {
-      engine = created;
-      notify("ready", "Local model ready. Your prompts and responses stay in this browser.");
-      return created;
-    })
+  notify("loading", "Preparing the smartest model this device can support. If it cannot fit, AgentForge automatically tries smaller faster models.");
+  loading = import("@mlc-ai/web-llm").then(async ({ CreateMLCEngine }) => {
+    let lastModelError: unknown;
+    for (const candidate of MODEL_LADDER) {
+      try {
+        notify("loading", `Trying ${candidate.label} (${candidate.vram}). Cached models start faster.`);
+        const created = await CreateMLCEngine(candidate.id, {
+          initProgressCallback: (progress) => notify("loading", `${candidate.label}: ${progress.text || "downloading…"}`),
+        });
+        activeModel = candidate.id;
+        engine = created;
+        notify("ready", `${candidate.label} ready. Responses stay in this browser.`);
+        return created;
+      } catch (error) {
+        lastModelError = error;
+      }
+    }
+    throw lastModelError instanceof Error ? lastModelError : new Error("No local model could be loaded.");
+  })
     .catch((error) => {
-      const message = error instanceof Error ? error.message : "The local model could not be loaded.";
+      const message = error instanceof Error ? error.message : "The local models could not be loaded.";
       notify("error", message);
       throw error;
     })
@@ -70,9 +86,9 @@ export async function generateLocalLLMResponse(agent: LocalAgent, messages: Arra
   notify("generating", "Generating locally on this device…");
   const system = `${agent.systemPrompt}\n\nYou are running fully locally in a browser on a mobile device. Never claim to browse or call an external service. Be helpful, honest, and concise. Use the saved context when relevant.\n\n${contextFor(agent)}`;
   const request = await activeEngine.chat.completions.create({
-    messages: [{ role: "system", content: system }, ...messages.slice(-16)],
+    messages: [{ role: "system", content: system }, ...messages.slice(-10)],
     temperature: agent.settings.mode === "precise" ? 0.35 : agent.settings.mode === "creative" ? 0.9 : 0.65,
-    max_tokens: agent.settings.responseLength === "brief" ? 180 : agent.settings.responseLength === "deep" ? 500 : 320,
+    max_tokens: agent.settings.responseLength === "brief" ? 140 : agent.settings.responseLength === "deep" ? 360 : 240,
     stream: true,
   });
   let answer = "";
