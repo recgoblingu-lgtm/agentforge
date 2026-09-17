@@ -56,6 +56,7 @@ export default function AgentWorkspace() {
 
   useEffect(() => { const latest = getAgent(id); if (latest) setAgent(latest); }, [id]);
   useEffect(() => subscribeLocalLLM((status, detail) => { setLlmStatus(status); setLlmDetail(detail); }), []);
+  useEffect(() => { if (supportsLocalLLM() && !getLocalLLMState().ready) void loadLocalLLM().catch(() => undefined); }, []);
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages, isResponding]);
   const capabilities = useMemo(() => agent?.capabilities || [], [agent]);
   if (!agent) return <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-[#071016] text-[#e4edf0]"><p>We couldn’t find that companion in this browser.</p><Button onClick={() => setLocation("/")}>Back to studio</Button></div>;
@@ -75,7 +76,7 @@ export default function AgentWorkspace() {
     setChatId(selectedId); setMessages(next); persistMessages(next, selectedId, existing?.title || trimmed.slice(0, 80)); setInput(""); setAttachmentName(undefined); setIsResponding(true);
     const localReady = getLocalLLMState().ready;
     if (!localReady) {
-      const answer = `${createOfflineResponse(agent, next)}\n\n(${llmDetail})`;
+      const answer = `${createOfflineResponse(agent, next)}\n\n(Local AI is starting in the background. Open the Local panel to see download progress or the exact reason it cannot run.)`;
       const complete = [...next, { role: "assistant" as const, content: answer }];
       setMessages(complete); persistMessages(complete, selectedId, existing?.title || trimmed.slice(0, 80));
       if (supportsLocalLLM()) void loadLocalLLM().catch(() => undefined);
