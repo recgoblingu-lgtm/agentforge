@@ -1,4 +1,3 @@
-import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/NotFound";
 import AgentWorkspace from "@/pages/AgentWorkspace";
@@ -14,33 +13,9 @@ import Home from "./pages/Home";
 const basePath = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 function AppRoutes() {
-  return (
-    <WouterRouter base={basePath}>
-      <Switch>
-        <Route path="/" component={Home} />
-        <Route path="/agent/:id" component={AgentWorkspace} />
-        <Route path="/backup" component={BackupPage} />
-        <Route path="/code-lab" component={CodeLab} />
-        <Route path="/browser" component={BrowserPage} />
-        <Route path="/tools" component={ToolsPage} />
-        <Route path="/404" component={NotFound} />
-        <Route component={NotFound} />
-      </Switch>
-    </WouterRouter>
-  );
+  return <WouterRouter base={basePath}><Switch><Route path="/" component={Home} /><Route path="/agent/:id" component={AgentWorkspace} /><Route path="/backup" component={BackupPage} /><Route path="/code-lab" component={CodeLab} /><Route path="/browser" component={BrowserPage} /><Route path="/tools" component={ToolsPage} /><Route path="/404" component={NotFound} /><Route component={NotFound} /></Switch></WouterRouter>;
 }
 
-function App() {
-  return (
-    <ErrorBoundary>
-      <ThemeProvider defaultTheme="light">
-        <TooltipProvider>
-          <Toaster />
-          <AppRoutes />
-        </TooltipProvider>
-      </ThemeProvider>
-    </ErrorBoundary>
-  );
+export default function App() {
+  return <ErrorBoundary><ThemeProvider defaultTheme="light"><TooltipProvider><AppRoutes /></TooltipProvider></ThemeProvider></ErrorBoundary>;
 }
-
-export default App;
