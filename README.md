@@ -22,6 +22,12 @@ The application is a Vite and React single-page application. It can load a small
 
 The local runtime uses [WebLLM](https://webllm.mlc.ai/docs/), which exposes OpenAI-style chat completions over WebGPU. It tries the smarter Llama 3.2 3B model first, then automatically falls back to a faster 1B model and TinyLlama if memory or device limits prevent the larger model from loading. WebLLM documents asynchronous first-run model loading and browser caching; Apple documents WebGPU support on iPhone, iPad, Mac, and Vision Pro. Performance and availability still depend on the specific iPhone, iOS version, Safari/WebKit build, available memory, and whether the model assets are allowed to remain cached.
 
+## Use without Wi-Fi
+
+The production build is also an installable PWA. While online, open the deployed site in Safari, let the app shell load, send a message once so the local model finishes downloading and is cached, then use **Share → Add to Home Screen**. The service worker caches the AgentForge app shell, and WebLLM caches the model assets separately. After that preparation, the app can reopen in Airplane Mode. iOS may clear site storage under storage pressure, so the status should be checked before relying on it for a long offline period.
+
+AgentForge is optimized for responsiveness rather than making every request wait for the largest model. It immediately returns a local fallback while a model is warming up, streams tokens when a local model is ready, limits context to recent messages, and switches to a fast fallback if generation exceeds nine seconds.
+
 ## Run locally
 
 ```bash
