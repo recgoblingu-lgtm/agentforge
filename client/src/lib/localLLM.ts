@@ -45,7 +45,7 @@ export async function loadLocalLLM() {
     throw new Error("WebGPU is not available in this browser.");
   }
 
-  notify("loading", "Preparing the smartest model this device can support. If it cannot fit, AgentForge automatically tries smaller faster models.");
+  notify("loading", "Preparing the smartest model this device can support. If it cannot fit, Arphix automatically tries smaller faster models.");
   loading = import("@mlc-ai/web-llm").then(async ({ CreateMLCEngine }) => {
     let lastModelError: unknown;
     for (const candidate of MODEL_LADDER) {

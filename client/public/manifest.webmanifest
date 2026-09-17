@@ -1,6 +1,6 @@
 {
-  "name": "AgentForge Private AI Studio",
-  "short_name": "AgentForge",
+  "name": "Arphix Private Local AI",
+  "short_name": "Arphix",
   "description": "A private browser-local AI companion that can work offline.",
   "display": "standalone",
   "start_url": "./",
