@@ -101,15 +101,40 @@ def save_history(messages):
         json.dump(messages, target, indent=2)
 
 
+def install_llama_cpp():
+    print("\nllama_cpp is not installed in Pythonista.")
+    answer = input("Try installing it on this iPhone now? [y/N]: ").strip().lower()
+    if answer not in ("y", "yes"):
+        print("Okay. Install a Pythonista-compatible llama_cpp runtime, then run this script again.")
+        return False
+
+    print("Attempting a local Pythonista installation...")
+    print("This may fail because llama_cpp contains native iOS code and Pythonista needs a compatible wheel.")
+    try:
+        import pip
+        result = pip.main(["install", "--user", "llama-cpp-python"])
+        if result != 0:
+            print("The standard package was not compatible with this Pythonista build.")
+            print("You need a prebuilt iOS/Pythonista llama_cpp wheel or runtime; desktop wheels will not work.")
+            return False
+        return True
+    except Exception as error:
+        print("Automatic installation failed: %s" % error)
+        print("Pythonista cannot compile this native package on many iPhones.")
+        print("Install a Pythonista-compatible prebuilt llama_cpp runtime, then run this script again.")
+        return False
+
+
 def load_llama():
     try:
         from llama_cpp import Llama
     except ImportError:
-        print("\nPythonista does not currently have llama_cpp installed.")
-        print("The model file is ready, but a native llama.cpp Python binding is required to run it.")
-        print("Install a Pythonista-compatible prebuilt llama_cpp wheel/runtime, then run this script again.")
-        print("Do not install the regular desktop package blindly; iOS needs an iOS-compatible build.")
-        raise
+        if not install_llama_cpp():
+            raise RuntimeError("llama_cpp is required. The model is downloaded, but Pythonista has no compatible local runtime.")
+        try:
+            from llama_cpp import Llama
+        except ImportError:
+            raise RuntimeError("Installation finished without a usable llama_cpp module. A native iOS-compatible build is required.")
 
     print("Loading Llama locally. The first load can take a minute.")
     return Llama(
