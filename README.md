@@ -20,7 +20,7 @@ The application is a Vite and React single-page application. It can load a small
 
 > **Important limitation:** The first local-model setup downloads roughly a gigabyte of quantized model assets and requires a browser with WebGPU. On iPhone/Safari versions or devices where WebGPU is unavailable or memory-constrained, AgentForge automatically uses its deterministic local fallback instead. The model runs on the device after download; prompts are not sent to an inference API.
 
-The local runtime uses [WebLLM](https://webllm.mlc.ai/docs/), which exposes OpenAI-style chat completions over WebGPU. It tries the smarter Llama 3.2 3B model first, then automatically falls back to a faster 1B model and TinyLlama if memory or device limits prevent the larger model from loading. WebLLM documents asynchronous first-run model loading and browser caching; Apple documents WebGPU support on iPhone, iPad, Mac, and Vision Pro. Performance and availability still depend on the specific iPhone, iOS version, Safari/WebKit build, available memory, and whether the model assets are allowed to remain cached.
+The local runtime uses [WebLLM](https://webllm.mlc.ai/docs/), which exposes OpenAI-style chat completions over WebGPU. It now tries the iPhone-friendly Llama 3.2 1B model first, then TinyLlama, and finally the smarter Llama 3.2 3B model when the device has enough memory. WebLLM documents asynchronous first-run model loading and browser caching; Apple documents WebGPU support on iPhone, iPad, Mac, and Vision Pro. Performance and availability still depend on the specific iPhone, iOS version, Safari/WebKit build, available memory, and whether the model assets are allowed to remain cached.
 
 ## Use without Wi-Fi
 
