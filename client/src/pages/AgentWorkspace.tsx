@@ -74,15 +74,15 @@ export default function AgentWorkspace() {
     const existing = agent.chats.find((chat) => chat.id === selectedId);
     const next = [...messages, { role: "user" as const, content: attachmentName ? `${trimmed}\n[${attachmentName}]` : trimmed }];
     setChatId(selectedId); setMessages(next); persistMessages(next, selectedId, existing?.title || trimmed.slice(0, 80)); setInput(""); setAttachmentName(undefined); setIsResponding(true);
-    const localReady = getLocalLLMState().ready;
-    if (!localReady) {
-      const answer = `${createOfflineResponse(agent, next)}\n\n(Local AI is starting in the background. Open the Local panel to see download progress or the exact reason it cannot run.)`;
+    const localState = getLocalLLMState();
+    if (!localState.ready && llmStatus !== "loading" && llmStatus !== "idle") {
+      const answer = createOfflineResponse(agent, next) + "\n\n(Local AI is unavailable on this device. Open the Local panel to see the exact reason.)";
       const complete = [...next, { role: "assistant" as const, content: answer }];
       setMessages(complete); persistMessages(complete, selectedId, existing?.title || trimmed.slice(0, 80));
-      if (supportsLocalLLM()) void loadLocalLLM().catch(() => undefined);
       setIsResponding(false);
       return;
     }
+    if (!localState.ready && supportsLocalLLM()) void loadLocalLLM().catch(() => undefined);
     let completed = false;
     const fallbackTimer = window.setTimeout(() => {
       if (completed) return;
@@ -91,9 +91,10 @@ export default function AgentWorkspace() {
       const complete = [...next, { role: "assistant" as const, content: answer }];
       setMessages(complete); persistMessages(complete, selectedId, existing?.title || trimmed.slice(0, 80));
       setIsResponding(false);
-    }, 9000);
+    }, 45000);
     void generateLocalLLMResponse(agent, next, (token) => {
       if (completed) return;
+      window.clearTimeout(fallbackTimer);
       setMessages((current) => {
         const withoutDraft = current.filter((message) => message.role !== "assistant" || message.content !== "");
         const last = withoutDraft[withoutDraft.length - 1];

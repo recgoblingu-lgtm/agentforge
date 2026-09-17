@@ -3,8 +3,8 @@ import type { LocalAgent } from "./localStore";
 
 export const LOCAL_MODEL_ID = "Llama-3.2-3B-Instruct-q4f16_1-MLC";
 const MODEL_LADDER = [
-  { id: "Llama-3.2-1B-Instruct-q4f16_1-MLC", label: "Llama 3.2 1B Fast", vram: "about 900 MB" },
   { id: "TinyLlama-1.1B-Chat-v0.4-q4f32_1-MLC", label: "TinyLlama Fastest", vram: "about 800 MB" },
+  { id: "Llama-3.2-1B-Instruct-q4f16_1-MLC", label: "Llama 3.2 1B Fast", vram: "about 900 MB" },
   { id: "Llama-3.2-3B-Instruct-q4f16_1-MLC", label: "Llama 3.2 3B Smart", vram: "about 2.3 GB" },
 ] as const;
 export type LocalLLMStatus = "idle" | "loading" | "ready" | "generating" | "unsupported" | "error";
